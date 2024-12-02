@@ -84,9 +84,7 @@ def part_two_solution(data: list[list[int]]) -> int:
     Similar to before, but now if an unsafe row becomes safe after removing one
     item, then that row should be counted as well.
 
-    I define an unsafe value as a value that causes the row to become unsafe.
-
-    Because input side is small (10^3) this is ok but for larger inputs (>= 10^4), this solution would be naive.
+    I define an unsafe value as a value that causes the row to become unsafe..
 
     :param data: input data
     :return: The number of safe rows.
