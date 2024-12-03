@@ -9,6 +9,10 @@ import re
 input_path = os.path.join(os.curdir, 'input.txt')
 pattern = re.compile(r'mul\(\d*,\d*\)')
 
+updated_pattern = re.compile(r'don\'t\(\)|do\(\)|mul\(\d*,\d*\)')
+START_SEQUENCE = 'do()'
+STOP_SEQUENCE = 'don\'t()'
+
 
 def parse_data():
     results = []
@@ -39,12 +43,40 @@ def part_one_solution(ls: list[str]) -> int:
     return result
 
 
+def part_two_solution(ls: list[str]) -> int:
+    """
+    Similar to one BUT, now there are START and STOP commands.
+    START and STOP patterns are all the same.
+    Initially we're in a START state.
 
+    ANY regular patterns found after a STOP command and before a START command do not count.
+
+    :param ls:
+    :return:
+    """
+
+    result = 0
+    should_process = True
+    for line in ls:
+        for match in updated_pattern.findall(line):
+            if match == START_SEQUENCE:
+                should_process = True
+            elif match == STOP_SEQUENCE:
+                should_process = False
+            elif should_process:
+                substring: list[str] = match[4:len(match) - 1].split(',')
+                p1, p2 = substring
+
+                result += int(p1) * int(p2)
+
+    return result
 
 
 if __name__ == '__main__':
     data = parse_data()
     ans = part_one_solution(data)
+    ans2 = part_two_solution(data)
+
 
 
 
