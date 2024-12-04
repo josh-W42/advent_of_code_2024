@@ -113,6 +113,98 @@ def part_one_solution(matrix: list[list[str]]):
     return result
 
 
+def part_two_solution(matrix: list[list[str]]):
+    """
+    Ok so similarly as before, we must search a matrix.
+    BUT we have to find two sequences of 'MAS' in an 'X' arrangement.
+
+    So if choose the center 'A' then the maximum distance we have to look is 1 row/ column away and
+    we know exactly what we're looking for each time.
+
+    :param matrix:
+    :return:
+    """
+
+    result = 0
+
+    for i in range(len(matrix)):
+        for j in range(len(matrix[0])):
+            if matrix[i][j] != 'A':
+                continue
+
+            # There are four different orientations you have to account for.
+            correct_placements = 0
+            if i - 1 >= 0 and j - 1 >= 0 and matrix[i - 1][j - 1] == "M":
+                correct_placements += 1
+
+            if i + 1 < len(matrix) and j - 1 >= 0 and matrix[i + 1][j - 1] == 'M':
+                correct_placements += 1
+
+            if j + 1 < len(matrix[0]) and i - 1 >= 0 and matrix[i - 1][j + 1] == 'S':
+                correct_placements += 1
+
+            if j + 1 < len(matrix[0]) and i + 1 < len(matrix) and matrix[i + 1][j + 1] == 'S':
+                correct_placements += 1
+
+            if correct_placements == 4:
+                result += 1
+                continue
+
+            correct_placements = 0
+            if i - 1 >= 0 and j - 1 >= 0 and matrix[i - 1][j - 1] == "S":
+                correct_placements += 1
+
+            if i + 1 < len(matrix) and j - 1 >= 0 and matrix[i + 1][j - 1] == 'S':
+                correct_placements += 1
+
+            if j + 1 < len(matrix[0]) and i - 1 >= 0 and matrix[i - 1][j + 1] == 'M':
+                correct_placements += 1
+
+            if j + 1 < len(matrix[0]) and i + 1 < len(matrix) and matrix[i + 1][j + 1] == 'M':
+                correct_placements += 1
+
+            if correct_placements == 4:
+                result += 1
+                continue
+
+            correct_placements = 0
+            if i - 1 >= 0 and j - 1 >= 0 and matrix[i - 1][j - 1] == "M":
+                correct_placements += 1
+
+            if i + 1 < len(matrix) and j - 1 >= 0 and matrix[i + 1][j - 1] == 'S':
+                correct_placements += 1
+
+            if j + 1 < len(matrix[0]) and i - 1 >= 0 and matrix[i - 1][j + 1] == 'M':
+                correct_placements += 1
+
+            if j + 1 < len(matrix[0]) and i + 1 < len(matrix) and matrix[i + 1][j + 1] == 'S':
+                correct_placements += 1
+
+            if correct_placements == 4:
+                result += 1
+                continue
+
+            correct_placements = 0
+            if i - 1 >= 0 and j - 1 >= 0 and matrix[i - 1][j - 1] == "S":
+                correct_placements += 1
+
+            if i + 1 < len(matrix) and j - 1 >= 0 and matrix[i + 1][j - 1] == 'M':
+                correct_placements += 1
+
+            if j + 1 < len(matrix[0]) and i - 1 >= 0 and matrix[i - 1][j + 1] == 'S':
+                correct_placements += 1
+
+            if j + 1 < len(matrix[0]) and i + 1 < len(matrix) and matrix[i + 1][j + 1] == 'M':
+                correct_placements += 1
+
+            if correct_placements == 4:
+                result += 1
+                continue
+
+    return result
+
+
 if __name__ == '__main__':
     data = parse_data()
     ans = part_one_solution(data)
+    ans_2 = part_two_solution(data)
