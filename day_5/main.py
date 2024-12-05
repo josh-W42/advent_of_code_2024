@@ -32,7 +32,7 @@ def part_one_solution(rules: dict[int, set[int]], prints: list[list[int]]) -> in
     So we have a set of rules in a dictionary:
 
     - Where a key has to appear before any number in the set rules[key].
-    - Each number in the set rules[key] each might be in rules.
+    - Each number in the set rules[key] might be in rules.
 
     Then we have a list of prints:
 
@@ -64,6 +64,60 @@ def part_one_solution(rules: dict[int, set[int]], prints: list[list[int]]) -> in
                     break
 
         if is_in_correct_order:
+            result += update[len(update) // 2]
+
+    return result
+
+
+def part_two_solution(rules: dict[int, set[int]], prints: list[list[int]]) -> int:
+    """
+    See part 1.
+    Now we only focus on the incorrect prints.
+    We have to create correct print from an incorrect print.
+
+        I purpose that we swap the value that breaks the rules with the value that should
+        come before it.
+        We repeat this process until it becomes correct.
+
+
+    Similar to before we take the sum of all the middle values and return the sum.
+
+    :param rules:
+    :param prints:
+    :return:
+    """
+
+    result = 0
+    for update in prints:
+        is_in_correct_order = True
+
+        for i in range(len(update)):
+            # Each val in rules[update[i]] cannot be before update[i]
+
+            if update[i] in rules:
+                for j in range(i):
+                    if update[j] in rules[update[i]]:
+                        is_in_correct_order = False
+                        break
+
+                if not is_in_correct_order:
+                    break
+
+        if not is_in_correct_order:
+
+            while not is_in_correct_order:
+                is_in_correct_order = True
+                for i in range(len(update)):
+                    if update[i] in rules:
+                        for j in range(i):
+                            if update[j] in rules[update[i]]:
+                                is_in_correct_order = False
+
+                                temp = update[j]
+                                update[j] = update[i]
+                                update[i] = temp
+                                break
+
             result += update[len(update) // 2]
 
     return result
@@ -102,4 +156,5 @@ def analyze_data(m: dict[int, set[int]], ls: list[list[int]]):
 if __name__ == '__main__':
     rule_map, prints = parse_data()
     # analyze_data(rule_map, prints)
-    ans = part_one_solution(rule_map, prints)
+    ans_1 = part_one_solution(rule_map, prints)
+    ans_2 = part_two_solution(rule_map, prints)
