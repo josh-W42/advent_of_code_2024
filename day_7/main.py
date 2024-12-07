@@ -60,6 +60,44 @@ def part_one_solution(mp: dict[int, list[int]]):
     return result
 
 
+def equation_is_possible_2(target: int, options: list[int], solution: int, index: int):
+    if solution > target:
+        return False
+    if solution == target and index == len(options):
+        return True
+    if index >= len(options):
+        return False
+
+    add_next = equation_is_possible_2(target, options, solution + options[index], index + 1)
+    multiply_next = equation_is_possible_2(target, options, solution * options[index], index + 1)
+    concat_next = equation_is_possible_2(target, options, int(str(solution) + str(options[index])), index + 1)
+
+    return add_next or multiply_next or concat_next
+
+
+def part_two_solution(mp: dict[int, list[int]]):
+    """
+    Similar to before only now you have a third option; concat.
+    concatenate the digits of left and right values to produce a new number.
+
+    we can modify the recursive solution to include this third option.
+
+    :param mp:
+    :return:
+    """
+
+    result = 0
+
+    for key in mp.keys():
+        value = mp[key]
+
+        if equation_is_possible_2(key, value, value[0], 1):
+            result += key
+
+    return result
+
+
 if __name__ == '__main__':
     data = parse_data()
     ans = part_one_solution(data)
+    ans_2 = part_two_solution(data)
