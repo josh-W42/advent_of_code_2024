@@ -119,6 +119,12 @@ def part_two_solution(mat: list[list[str]]) -> int:
 
     anti_nodes = set()
 
+    def travel_and_add(y: int, x: int, dy: int, dx: int):
+        while (0 <= y + dy < len(mat)) and (0 <= x + dx < len(mat[0])):
+            y += dy
+            x += dx
+            anti_nodes.add((y, x))
+
     for node in nodes:
         for i in range(len(nodes[node])):
             for j in range(i + 1, len(nodes[node])):
@@ -135,12 +141,6 @@ def part_two_solution(mat: list[list[str]]) -> int:
 
                 anti_node_right_x = 0
                 anti_node_right_y = 0
-
-                def travel_and_add(y: int, x: int, dy: int, dx: int):
-                    while (0 <= y + dy < len(mat)) and (0 <= x + dx < len(mat[0])):
-                        y += dy
-                        x += dx
-                        anti_nodes.add((y, x))
 
                 if first[1] < second[1]:
                     anti_node_left_x = first[1]
