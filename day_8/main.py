@@ -96,6 +96,97 @@ def part_one_solution(mat: list[list[str]]) -> int:
     return len(anti_nodes)
 
 
+def part_two_solution(mat: list[list[str]]) -> int:
+    """
+    alright so similar to before, but anti-nodes can now be
+    projected in a linear line with the same slope made between pairs.
+
+    :param mat:
+    :return:
+    """
+
+    nodes = {}
+
+    for i in range(len(mat)):
+        for j in range(len(mat[0])):
+            if mat[i][j] == '.':
+                continue
+
+            if mat[i][j] in nodes:
+                nodes[mat[i][j]].append((i, j))
+            else:
+                nodes[mat[i][j]] = [(i, j)]
+
+    anti_nodes = set()
+
+    for node in nodes:
+        for i in range(len(nodes[node])):
+            for j in range(i + 1, len(nodes[node])):
+                first = nodes[node][i]
+                second = nodes[node][j]
+                delta_y = abs(first[0] - second[0])
+                delta_x = abs(first[1] - second[1])
+
+                # Determine which is truly first from left to right
+                # Then determine which is truly first from top to bottom
+
+                anti_node_left_x = 0
+                anti_node_left_y = 0
+
+                anti_node_right_x = 0
+                anti_node_right_y = 0
+
+                def travel_and_add(y: int, x: int, dy: int, dx: int):
+                    while (0 <= y + dy < len(mat)) and (0 <= x + dx < len(mat[0])):
+                        y += dy
+                        x += dx
+                        anti_nodes.add((y, x))
+
+                if first[1] < second[1]:
+                    anti_node_left_x = first[1]
+                    anti_node_right_x = second[1]
+
+                    if first[0] < second[0]:
+                        anti_node_left_y = first[0]
+                        anti_node_right_y = second[0]
+
+                        travel_and_add(anti_node_left_y, anti_node_left_x, -delta_y, -delta_x)
+                        travel_and_add(anti_node_right_y, anti_node_right_x, delta_y, delta_x)
+                    else:
+                        anti_node_left_y = first[0]
+                        anti_node_right_y = second[0]
+
+                        travel_and_add(anti_node_left_y, anti_node_left_x, delta_y, -delta_x)
+                        travel_and_add(anti_node_right_y, anti_node_right_x, -delta_y, delta_x)
+
+                    anti_nodes.add((anti_node_left_y, anti_node_left_x))
+                    anti_nodes.add((anti_node_right_y, anti_node_right_x))
+
+                else:
+                    anti_node_left_x = second[1]
+                    anti_node_right_x = first[1]
+
+                    if second[0] < first[0]:
+                        anti_node_left_y = second[0]
+                        anti_node_right_y = first[0]
+
+                        travel_and_add(anti_node_left_y, anti_node_left_x, -delta_y, -delta_x)
+                        travel_and_add(anti_node_right_y, anti_node_right_x, delta_y, delta_x)
+
+                    else:
+                        anti_node_left_y = second[0]
+                        anti_node_right_y = first[0]
+
+                        travel_and_add(anti_node_left_y, anti_node_left_x, delta_y, -delta_x)
+                        travel_and_add(anti_node_right_y, anti_node_right_x, -delta_y, delta_x)
+
+                    anti_nodes.add((anti_node_left_y, anti_node_left_x))
+                    anti_nodes.add((anti_node_right_y, anti_node_right_x))
+
+    return len(anti_nodes)
+
+
 if __name__ == '__main__':
     data = parse_data()
     ans = part_one_solution(data)
+    ans_2 = part_two_solution(data)
