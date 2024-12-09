@@ -186,3 +186,4 @@ fabric.properties
 
 #Advent of code
 input.txt
+*.txt
