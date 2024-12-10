@@ -93,6 +93,66 @@ def part_one_solution(mat: list[list[int]]):
     return ends_reached
 
 
+def part_two_solution(mat: list[list[int]]):
+    """
+    Very similar to before only now
+    we ditch the summit set since we want all the distinct
+    paths that lead to a summit rather than just counting
+    the number of unique summits that a trail start can reach.
+
+    :param mat:
+    :return:
+    """
+
+    ends_reached = 0
+
+    for i in range(len(mat)):
+        for j in range(len(mat[0])):
+            if mat[i][j] != 0:
+                continue
+
+            stack = [[(i, j), 1]]
+            ends = 0
+
+            while stack:
+                node, next_val = stack.pop()
+                a, b = node
+
+                if a - 1 >= 0 and mat[a - 1][b] == next_val:
+                    if next_val == 9:
+                        ends += 1
+                    else:
+                        stack.append([(a - 1, b), next_val + 1])
+
+                if a + 1 < len(mat) and mat[a + 1][b] == next_val:
+
+                    if next_val == 9:
+                        ends += 1
+                    else:
+                        stack.append([(a + 1, b), next_val + 1])
+
+                if b - 1 >= 0 and mat[a][b - 1] == next_val:
+
+                    if next_val == 9:
+                        ends += 1
+                    else:
+                        stack.append([(a, b - 1), next_val + 1])
+
+                if b + 1 < len(mat[0]) and mat[a][b + 1] == next_val:
+
+                    if next_val == 9:
+                        ends += 1
+                    else:
+                        stack.append([(a, b + 1), next_val + 1])
+
+            ends_reached += ends
+
+    return ends_reached
+
+
 if __name__ == '__main__':
     data = parse_data()
-    print(part_one_solution(data))
+    ans = part_one_solution(data)
+    ans = part_two_solution(data)
+
+    print(ans)
