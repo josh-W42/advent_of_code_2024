@@ -14,7 +14,7 @@ def parse_data() -> list[int]:
     return result
 
 
-def part_one_solution(ls: list[int]) -> int:
+def solution(ls: list[int], blinks: int) -> int:
     """
     So you have a list of integers and a set of rules.
 
@@ -34,6 +34,8 @@ def part_one_solution(ls: list[int]) -> int:
     you have to count the number of stones you have left
     and return that number
 
+    part 1 is 25 blinks, part 2 is 75.
+
     :param ls:
     :return:
     """
@@ -41,7 +43,10 @@ def part_one_solution(ls: list[int]) -> int:
     current_stones = []
     next_stones = ls
 
-    for _ in range(25):
+    stone_map: dict[int, list[int]] = {}
+
+    for c in range(blinks):
+        print(c)
 
         current_stones = next_stones.copy()
         next_stones = []
@@ -50,27 +55,42 @@ def part_one_solution(ls: list[int]) -> int:
             stone = current_stones[i]
             str_stone = str(stone)
 
+            if stone in stone_map:
+                for s in stone_map[stone]:
+                    next_stones.append(s)
+
+                continue
+
             if stone == 0:
                 next_stones.append(1)
             elif len(str_stone) % 2 == 0:
-                ls_stone = [val for val in str_stone]
+                half = len(str_stone) // 2
 
-                left = ls_stone[:len(ls_stone) // 2]
-                right = ls_stone[len(ls_stone) // 2:]
+                left = str_stone[:half]
+                right = str_stone[half:]
 
-                for j in range(len(right)):
-                    if right[j] != '0':
-                        right = right[j:]
-                        break
+                if right[0] == '0':
+                    for j in range(len(right)):
+                        if right[j] != '0':
+                            right = right[j:]
+                            break
 
-                next_stones.append(int("".join(left) or 0))
-                next_stones.append(int("".join(right) or 0))
+                result_left = int(left or 0)
+                result_right = int(right or 0)
+
+                next_stones.append(result_left)
+                next_stones.append(result_right)
+
+                stone_map[stone] = [result_left, result_right]
             else:
-                next_stones.append(stone * 2024)
+                product = stone * 2024
+                next_stones.append(product)
+                stone_map[stone] = [product]
 
     return len(next_stones)
 
 
 if __name__ == '__main__':
     data = parse_data()
-    print(part_one_solution(data))
+    print(solution(data, 25))
+    # print(solution(data, 75))
