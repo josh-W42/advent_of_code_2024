@@ -3,7 +3,10 @@ Claw Contraption
 """
 
 import os
+from math import isclose
 from typing import Tuple
+
+import numpy as np
 
 input_path = os.path.join(os.curdir, 'input.txt')
 
@@ -93,6 +96,55 @@ def part_one_solution(ls: list[list[Tuple[int, int], Tuple[int, int], Tuple[int,
     return result
 
 
+def part_two_solution(ls: list[list[Tuple[int, int], Tuple[int, int], Tuple[int, int]]]):
+    """
+    Part two is very similar but now every target is added by 10000000000000 in both the x and y directions
+
+    This cannot be solved reasonably with my previous solution.
+    But upon closer inspection, I find my previous solution to be naive.
+
+    If you consider that the input data is instead a system of linear equations.
+    Then we have 2 equations and two unknowns. For example,
+
+    prize[0] = button_a[0] *(a) + button_b[0] * (b)
+    prize[1] = button_a[1] * (a) + button_b[1] * (b)
+
+
+    where a and b are some number of button presses for a and b respectively.
+    we can solve for a and b and then return 3(a) + b for the solution.
+
+    Using numpy we can solve this in a straightforward way.
+
+    I'm not able to get the exact answer that is required for the question,
+    I've tried increasing the precision and that has helped reach part one's solution
+    but for part two it's either too large or too small. So I'm stopping (for now...)
+
+    Was fun to investigate how to solve this problem in a less naive way
+    and look into how these large numbers could present massive precision errors.
+
+    :param ls:
+    :return:
+    """
+
+    result = 0
+    for i in range(len(ls)):
+        [button_a, button_b, prize] = ls[i]
+        buffed_prize = (prize[0] + 10000000000000, prize[1] + 10000000000000)
+
+        a = np.array([[button_a[0], button_b[0]], [button_a[1], button_b[1]]])
+        b = np.array([buffed_prize[0], buffed_prize[1]])
+
+        a, b = np.linalg.solve(a, b)
+
+        min_tokens: float = (3 * a) + b
+
+        if min_tokens > 0 and isclose(min_tokens, round(min_tokens), rel_tol=1e-14):
+            result += round(min_tokens)
+
+    return result
+
+
 if __name__ == '__main__':
     data = parse_data()
-    print(part_one_solution(data))
+    # print(part_one_solution(data))
+    print(part_two_solution(data))
